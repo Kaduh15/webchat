@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    build: ./app/frontend
+    container_name: frontend
+    tty: true
+    stdin_open: true
+    restart: always
+    volumes:
+      - ./app/frontend:/app-front
+    ports:
+      - 3000:3000
+    networks:
+      - webchat_net
+  
+  # api:
+  #   build: ./backend
+  #   container_name: backend
+  #   tty: true
+  #   stdin_open: true
+  #   restart: always
+  #   volumes:
+  #     - ./app/back:/app-back
+  #   ports:
+  #     - 3001:3001
+  #   networks:
+  #     - webchat_net
+
+networks:
+  webchat_net:
+    driver: bridge

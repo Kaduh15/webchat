@@ -8,10 +8,8 @@ import Login from './pages/Login';
 export default function Rotas() {
   return (
       <Routes>
-        <>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Chat />} />
-        </>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Chat />} />
       </Routes>
   );
 }

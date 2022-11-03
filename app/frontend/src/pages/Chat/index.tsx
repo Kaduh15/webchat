@@ -4,9 +4,8 @@ import { Navigate } from 'react-router-dom';
 import { io } from "socket.io-client";
 import useUserStore from '../../store/userStore';
 import { format } from 'date-fns'
-import 'dotenv/config'
 
-const urlSocket = process.env.APP_URL_SOCKET as string
+const urlSocket = import.meta.env.VITE_URL_SOCKET
 
 const socket = io(urlSocket);
 
@@ -55,7 +54,6 @@ const Chat: React.FC = () => {
     });
 
     socket.on('reciveMessage', (io) => {
-      console.log("🚀 ~ file: index.tsx ~ line 55 ~ socket.on ~ io", io)
       console.log('message received')
       if (user.userName !== io.userName){
         setMessages(prev => [...prev, io])

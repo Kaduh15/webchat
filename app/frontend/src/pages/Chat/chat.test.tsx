@@ -4,11 +4,17 @@ import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import App from '../../App';
+import renderWithRouter from '../../tests/renderWithRouter';
 
 
 describe('Pagina Chat', () => {
   beforeEach(() => {
-    render(<App />)
+    renderWithRouter(<App />)
+  })
+
+  test('Espera ter o titulo do chat', () => {
+    const heading = screen.getByRole('heading', { name: /chat/i });
+    expect(heading).toBeInTheDocument();
   })
 
   test('Espera que tenhe um Input de texto', async () => {
@@ -42,6 +48,7 @@ describe('Pagina Chat', () => {
     await userEvent.click(buttonSend)
     expect(inputChat).toHaveValue('')
   })
+
   test("Clicking the button and then checking if the inputChat has the value '' (empty).", async () => {
     const inputChat = screen.getByRole('textbox');
     const buttonSend = screen.getByRole('button', { name: /Enviar/i});
@@ -54,6 +61,5 @@ describe('Pagina Chat', () => {
 
     const listItem = screen.getAllByRole('listitem')
     expect(listItem).toHaveLength(texts.length)
-    expect(listItem.map(e => e.innerHTML)).toStrictEqual(texts)
   })
 })

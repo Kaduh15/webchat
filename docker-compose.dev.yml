@@ -12,13 +12,16 @@ services:
       - ./app/frontend:/usr/app-front
     environment:
       - PORT=3000
+      - APP_URL_SOCKET=http://localhost:3001
     ports:
       - 3000:3000
     networks:
       - webchat_net
 
   api:
-    build: ./app/backend
+    build:
+      context: .
+      dockerfile: ./app/backend/DockerfileDev
     container_name: backend
     tty: true
     stdin_open: true

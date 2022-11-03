@@ -1,34 +1,36 @@
-import React, { FormEvent, useState } from 'react';
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { io } from "socket.io-client";
 
 const socket = io('http://localhost:3001');
 
-socket.on("connect", () => {
-  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
-});
-
-type IMessagem = {
+export type IMessagem = {
+  socketId?: string;
   id: string;
-  username: string;
+  userName: string;
   text: string;
-  date: Date;
+  createdAt: Date;
 }
+
+const userName = Math.random() > 0.5 ? 'andre' : 'rafa'
 
 const Chat: React.FC = () => {
   const [message, setMessagem] = useState('')
   const [messages, setMessages] = useState<IMessagem[]>([])
+  const [isConnect, setIsConnect] = useState(socket.connected)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (message.trim()) {
       const newMessage: IMessagem = {
-        id: nanoid(),
-        username: Math.random() > 0.5 ? 'Claudio' : 'Tereza',
+        socketId: socket.id,
+        id: nanoid(20),
+        userName,
         text: message.trim(),
-        date: new Date(),
+        createdAt: new Date(),
       }
       setMessages(prev => [...prev, newMessage])
+      socket.emit('sendMessage', newMessage)
       setMessagem('')
     }
   }
@@ -37,17 +39,43 @@ const Chat: React.FC = () => {
     const newValue = e.currentTarget.value;
 
     setMessagem(newValue)
-}
+  }
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      setIsConnect(true);
+      socket.emit('getMessage',{}, (response: IMessagem[]) => {
+        setMessages(response)
+      })
+    });
+
+    socket.on('reciveMessage', (io) => {
+      console.log('message received')
+      if (userName !== io.userName){
+        setMessages(prev => [...prev, io])
+      }
+    })
+
+    socket.on('disconnect', () => {
+      setIsConnect(false);
+    });
+
+  return () => {
+    socket.off('connect');
+    socket.off('disconnect');
+  };
+  }, [])
 
   return (
     <div
       className='flex flex-col justify-between items-center w-full h-full'
     >
       <h1>chat</h1>
+      {isConnect && <h2>{userName}</h2>}
       <ul>
-        {messages.map(({id, text}) => (
-          <li key={id}>
-            {text}
+        {messages.map(({id, text, userName}) => (
+          <li key={Math.random()}>
+            <b>{userName}</b> | {text}
           </li>
         ))}
       </ul>

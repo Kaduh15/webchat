@@ -1,7 +1,7 @@
-import Chat from "./pages/chat";
+import Rotas from "./Routes";
 
 function App() {
-  return <Chat />
+  return <Rotas />
 }
 
 export default App;

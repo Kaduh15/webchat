@@ -9,23 +9,22 @@ services:
     restart: always
     command: npm run dev
     volumes:
-      - ./app/frontend:/app-front
+      - ./app/frontend:/usr/app-front
     environment:
       - PORT=3000
     ports:
       - 3000:3000
     networks:
       - webchat_net
-  
+
   api:
     build: ./app/backend
     container_name: backend
     tty: true
     stdin_open: true
     restart: always
-    command: npm run dev
     volumes:
-      - ./app/backend:/app-back
+      - ./app/backend:/usr/app-back
     environment:
       - PORT=3001
     ports:

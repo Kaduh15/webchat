@@ -4,8 +4,11 @@ import { Navigate } from 'react-router-dom';
 import { io } from "socket.io-client";
 import useUserStore from '../../store/userStore';
 import { format } from 'date-fns'
+import 'dotenv/config'
 
-const socket = io('http://localhost:3001');
+const urlSocket = process.env.APP_URL_SOCKET as string
+
+const socket = io(urlSocket);
 
 export type IMessagem = {
   socketId?: string;

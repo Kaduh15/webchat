@@ -3,7 +3,7 @@
 
   &#xa0;
 
-  <!-- <a href="https://webchat.netlify.app">Demo</a> -->
+  <a href="https://webchat-ochre.vercel.app/">Demo</a>
 </div>
 
 <h1 align="center">Webchat</h1>

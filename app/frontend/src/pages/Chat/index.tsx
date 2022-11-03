@@ -1,6 +1,9 @@
 import { nanoid } from 'nanoid';
 import React, { FormEvent, useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { io } from "socket.io-client";
+import useUserStore from '../../store/userStore';
+import { format } from 'date-fns'
 
 const socket = io('http://localhost:3001');
 
@@ -9,15 +12,14 @@ export type IMessagem = {
   id: string;
   userName: string;
   text: string;
-  createdAt: Date;
+  createdAt: string;
 }
-
-const userName = Math.random() > 0.5 ? 'andre' : 'rafa'
 
 const Chat: React.FC = () => {
   const [message, setMessagem] = useState('')
   const [messages, setMessages] = useState<IMessagem[]>([])
   const [isConnect, setIsConnect] = useState(socket.connected)
+  const { user } = useUserStore((store) => store)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -25,9 +27,9 @@ const Chat: React.FC = () => {
       const newMessage: IMessagem = {
         socketId: socket.id,
         id: nanoid(20),
-        userName,
+        userName: user.userName,
         text: message.trim(),
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       }
       setMessages(prev => [...prev, newMessage])
       socket.emit('sendMessage', newMessage)
@@ -50,8 +52,9 @@ const Chat: React.FC = () => {
     });
 
     socket.on('reciveMessage', (io) => {
+      console.log("🚀 ~ file: index.tsx ~ line 55 ~ socket.on ~ io", io)
       console.log('message received')
-      if (userName !== io.userName){
+      if (user.userName !== io.userName){
         setMessages(prev => [...prev, io])
       }
     })
@@ -66,16 +69,18 @@ const Chat: React.FC = () => {
   };
   }, [])
 
+  if (!user.userName) return <Navigate to='/login'/>
+
   return (
     <div
       className='flex flex-col justify-between items-center w-full h-full'
     >
       <h1>chat</h1>
-      {isConnect && <h2>{userName}</h2>}
+      {isConnect && <h2>{user.userName}</h2>}
       <ul>
-        {messages.map(({id, text, userName}) => (
+        {messages.map(({id, text, userName, createdAt}) => (
           <li key={Math.random()}>
-            <b>{userName}</b> | {text}
+            <b>{userName}</b> - {text} | {format(new Date(createdAt), 'dd-MMM HH:mm')}
           </li>
         ))}
       </ul>

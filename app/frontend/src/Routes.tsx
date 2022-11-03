@@ -1,8 +1,8 @@
 import {
-  BrowserRouter, Routes, Route,
+  Routes, Route,
 } from 'react-router-dom';
-import Chat from './pages/Chat';
 
+import Chat from './pages/Chat';
 import Login from './pages/Login';
 
 export default function Rotas() {

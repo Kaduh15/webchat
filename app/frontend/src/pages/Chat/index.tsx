@@ -4,8 +4,11 @@ import { Navigate } from 'react-router-dom';
 import { io } from "socket.io-client";
 import useUserStore from '../../store/userStore';
 import { format } from 'date-fns'
+import 'dotenv/config'
 
-const socket = io('http://localhost:3001');
+const urlSocket = process.env.APP_URL_SOCKET as string
+
+const socket = io(urlSocket);
 
 export type IMessagem = {
   socketId?: string;
@@ -79,7 +82,7 @@ const Chat: React.FC = () => {
       {isConnect && <h2>{user.userName}</h2>}
       <ul>
         {messages.map(({id, text, userName, createdAt}) => (
-          <li key={Math.random()}>
+          <li key={id}>
             <b>{userName}</b> - {text} | {format(new Date(createdAt), 'dd-MMM HH:mm')}
           </li>
         ))}

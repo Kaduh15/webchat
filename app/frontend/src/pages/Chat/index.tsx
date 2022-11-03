@@ -82,7 +82,7 @@ const Chat: React.FC = () => {
       {isConnect && <h2>{user.userName}</h2>}
       <ul>
         {messages.map(({id, text, userName, createdAt}) => (
-          <li key={Math.random()}>
+          <li key={id}>
             <b>{userName}</b> - {text} | {format(new Date(createdAt), 'dd-MMM HH:mm')}
           </li>
         ))}

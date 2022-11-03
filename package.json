@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "compose:up:dev": "docker-compose -f docker-compose.dev.yml up -d --build",
+    "compose:down:dev": "docker-compose -f docker-compose.dev.yml down --remove-orphans",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +18,13 @@
   "bugs": {
     "url": "https://github.com/Kaduh15/webchat/issues"
   },
-  "homepage": "https://github.com/Kaduh15/webchat#readme"
+  "homepage": "https://github.com/Kaduh15/webchat#readme",
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }

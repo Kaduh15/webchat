@@ -10,7 +10,7 @@ const Login: React.FC = () => {
 
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setinputUserName(e.currentTarget.value);
-    if (inputUserName.length > 3) {
+    if (inputUserName.length > 2) {
       setButtonDisabled(false)
     } else {
       setButtonDisabled(true)

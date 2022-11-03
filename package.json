@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "compose:up:dev": "docker-compose -f docker-compose.dev.yml up -d --build",
+    "compose:down:dev": "docker-compose -f docker-compose.dev.yml down --remove-orphans",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

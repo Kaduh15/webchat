@@ -65,7 +65,6 @@ The following tools were used in this project:
 - [Socket.io](https://socket.io/)
 - [Vite](https://vitejs.dev/)
 - [Vitest](https://vitest.dev/)
-- [Socket.io](- [Socket.io](https://socket.io/))
 
 ## :white_check_mark: Requirements ##
 

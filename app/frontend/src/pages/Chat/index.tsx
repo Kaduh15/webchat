@@ -97,7 +97,7 @@ const Chat: React.FC = () => {
           </h2>
       </header>
       <ul
-        className='flex flex-col justify-start h-full w-full p-3 gap-2 overflow-auto'
+        className='flex flex-col justify-start h-full w-full p-3 px-5 gap-2 overflow-auto scrollbar-thumb-gray-900 scrollbar-track-gray-100 scrollbar-thin'
       >
         {messages.map(({id, text, userName, createdAt}) => (
           <li

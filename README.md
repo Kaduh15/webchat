@@ -3,7 +3,7 @@
 
   &#xa0;
 
-  <a href="https://webchat-ochre.vercel.app/">Demo</a>
+  <a href="https://webchat-55.vercel.app/">Demo</a>
 </div>
 
 <h1 align="center">Webchat</h1>
@@ -46,29 +46,32 @@
 
 ## :dart: About ##
 
-Describe your project
+A simple chat app.
 
 ## :sparkles: Features ##
 
-:heavy_check_mark: Feature 1;\
-:heavy_check_mark: Feature 2;\
-:heavy_check_mark: Feature 3;
+:heavy_check_mark: Chat Real Time;\
+:heavy_check_mark: Login Screen;\
 
 ## :rocket: Technologies ##
 
 The following tools were used in this project:
 
-- [Expo](https://expo.io/)
 - [Node.js](https://nodejs.org/en/)
 - [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
+- [Tailwind](https://tailwindcss.com/)
+- [docker](https://www.docker.com/)
 - [TypeScript](https://www.typescriptlang.org/)
+- [Socket.io](https://socket.io/)
+- [Vite](https://vitejs.dev/)
+- [Vitest](https://vitest.dev/)
+- [Socket.io](- [Socket.io](https://socket.io/))
 
 ## :white_check_mark: Requirements ##
 
-Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
+Before starting :checkered_flag:, you need to have [Git](https://git-scm.com), [Node](https://nodejs.org/en/) end [docker](https://www.docker.com/) installed.
 
-## :checkered_flag: Starting ##
+## :checkered_flag: Starting with docker ##
 
 ```bash
 # Clone this project
@@ -78,12 +81,16 @@ $ git clone https://github.com/kaduh15/webchat
 $ cd webchat
 
 # Install dependencies
-$ yarn
+$ npm run prestart
 
 # Run the project
-$ yarn start
+$ npm run compore:up
 
-# The server will initialize in the <http://localhost:3000>
+# Stop the project
+$ npm run compore:down
+
+# The frontend will initialize in the <http://localhost:8080>
+# The backend will initialize in the <http://localhost:3001>
 ```
 
 ## :memo: License ##

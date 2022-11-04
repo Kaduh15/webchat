@@ -23,6 +23,12 @@ const Chat: React.FC = () => {
   const [isConnect, setIsConnect] = useState(socket.connected)
   const { user } = useUserStore((store) => store)
 
+  const myMessageCSS = (userName: string) => {
+    if (user.userName.toLocaleLowerCase().trim() === userName.toLocaleLowerCase().trim()) return 'self-end bg-emerald-500 flex flex-col justify-start text-black p-2 text-end';
+
+    return 'self-start bg-blue-500 flex flex-col justify-start text-black p-2 text-start'
+  }
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (message.trim()) {
@@ -54,7 +60,6 @@ const Chat: React.FC = () => {
     });
 
     socket.on('reciveMessage', (io) => {
-      console.log('message received')
       if (user.userName !== io.userName){
         setMessages(prev => [...prev, io])
       }
@@ -74,26 +79,56 @@ const Chat: React.FC = () => {
 
   return (
     <div
-      className='flex flex-col justify-between items-center w-full h-full'
+      className='flex flex-col justify-between items-center w-full h-screen'
     >
-      <h1>chat</h1>
-      {isConnect && <h2>{user.userName}</h2>}
-      <ul>
+      <header
+        className='flex flex-col items-center p-3 justify-center w-full bg-emerald-600 shadow-lg'
+      >
+        <h1
+          className='text-xl font-bold text-white shadow-inner capitalize '
+        >
+          Chat
+        </h1>
+
+          <h2
+            className='self-end shadow-2xl font-bold text-white text-2xl capitalize '
+          >
+            {user.userName}
+          </h2>
+      </header>
+      <ul
+        className='flex flex-col justify-start h-full w-full p-3 gap-2 overflow-auto'
+      >
         {messages.map(({id, text, userName, createdAt}) => (
-          <li key={id}>
-            <b>{userName}</b> - {text} | {format(new Date(createdAt), 'dd-MMM HH:mm')}
+          <li
+            className={`${myMessageCSS(userName)} min-w-[200px] rounded`}
+            key={id}
+          >
+            <b
+              className='capitalize text-sm'
+            >
+              {userName}
+            </b>
+            <p
+              className='text-white font-medium text-xl'
+            >
+              {text}
+            </p>
+            <span>
+              {format(new Date(createdAt), 'HH:mm')}
+            </span>
           </li>
         ))}
       </ul>
       <form
-        className='w-full flex justify-around p-3 bg-slate-600'
+        className='w-full flex justify-around p-3 bg-emerald-600'
         onSubmit={handleSubmit}
-        action=""
       >
         <input
           className='bg-white rounded w-[80%] px-3'
           type="text"
           onChange={handleChangeInput}
+          placeholder="Digite sua Mensagem..."
           value={message}
         />
         <button

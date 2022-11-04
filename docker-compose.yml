@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    build: ./app/frontend
+    container_name: frontend
+    tty: true
+    stdin_open: true
+    restart: always
+    environment:
+      - APP_URL_SOCKET=http://localhost:3001
+    ports:
+      - 8080:8080
+    networks:
+      - webchat_net
+
+  api:
+    build: ./app/backend/
+    container_name: backend
+    tty: true
+    stdin_open: true
+    restart: always
+    environment:
+      - PORT=3001
+    ports:
+      - 3001:3001
+    networks:
+      - webchat_net
+
+networks:
+  webchat_net:
+    driver: bridge

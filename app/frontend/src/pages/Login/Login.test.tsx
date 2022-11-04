@@ -5,9 +5,19 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import App from '../../App';
 import renderWithRouter from '../../tests/renderWithRouter';
+import Sinon from 'sinon';
+import * as userStore from '../../store/userStore';
 
 
 describe('Pagina Login', () => {
+
+  beforeEach(() => {
+    Sinon.stub(userStore, 'default').callsFake(() => ({user: { userName: 'Fernando' }}))
+  })
+
+  afterEach(() => {
+    Sinon.restore();
+  })
 
   test('Verifica se tem o titulo Login', () => {
     const { history } = renderWithRouter(<App />, '/login');

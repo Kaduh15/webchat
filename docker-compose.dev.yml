@@ -2,12 +2,13 @@ version: '3'
 
 services:
   web:
-    build: ./app/frontend
+    build:
+      context: .
+      dockerfile: ./app/frontend/DockerfileDev
     container_name: frontend
     tty: true
     stdin_open: true
     restart: always
-    command: npm run dev
     volumes:
       - ./app/frontend:/usr/app-front
     environment:

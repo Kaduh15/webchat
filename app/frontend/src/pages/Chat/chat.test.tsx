@@ -1,8 +1,11 @@
 // testes
-import {beforeEach, describe, expect, test} from 'vitest';
-import {render, screen} from '@testing-library/react';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
+import {screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import sinon from 'sinon';
+import * as userStore from '../../store/userStore';
 import '@testing-library/jest-dom';
+
 import App from '../../App';
 import renderWithRouter from '../../tests/renderWithRouter';
 
@@ -10,6 +13,11 @@ import renderWithRouter from '../../tests/renderWithRouter';
 describe('Pagina Chat', () => {
   beforeEach(() => {
     renderWithRouter(<App />)
+    sinon.stub(userStore, 'default').callsFake(() => ({user: { userName: 'Fernando' }}))
+  })
+
+  afterEach(() => {
+    sinon.restore();
   })
 
   test('Espera ter o titulo do chat', () => {

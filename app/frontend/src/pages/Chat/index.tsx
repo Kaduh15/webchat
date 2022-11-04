@@ -20,7 +20,6 @@ export type IMessagem = {
 const Chat: React.FC = () => {
   const [message, setMessagem] = useState('')
   const [messages, setMessages] = useState<IMessagem[]>([])
-  const [isConnect, setIsConnect] = useState(socket.connected)
   const { user } = useUserStore((store) => store)
 
   const myMessageCSS = (userName: string) => {
@@ -53,7 +52,6 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      setIsConnect(true);
       socket.emit('getMessage',{}, (response: IMessagem[]) => {
         setMessages(response)
       })
@@ -66,12 +64,12 @@ const Chat: React.FC = () => {
     })
 
     socket.on('disconnect', () => {
-      setIsConnect(false);
     });
 
   return () => {
     socket.off('connect');
     socket.off('disconnect');
+    socket.off('reciveMessage');
   };
   }, [])
 

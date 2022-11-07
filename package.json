@@ -8,7 +8,11 @@
     "compose:down:dev": "docker-compose -f docker-compose.dev.yml down --remove-orphans",
     "compose:up": "docker-compose -f docker-compose.yml up -d --build",
     "compose:down": "docker-compose -f docker-compose.yml down --remove-orphans",
-    "prestart": "npm i && cd app/frontend && npm i && cd ../backend && cd ../../",
+    "prestart": "npm i && cd app/frontend && npm i && cd ../backend && npm i && cd ../../",
+    "start:front:dev": "cd app/frontend && npm run dev",
+    "start:back:dev": "cd app/backend && npm run dev",
+    "start:front": "cd app/frontend && npm start",
+    "start:back": "cd app/backend && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

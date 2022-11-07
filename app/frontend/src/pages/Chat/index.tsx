@@ -1,11 +1,11 @@
 import { nanoid } from 'nanoid';
 import React, { FormEvent, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { io } from "socket.io-client";
+import { io } from 'socket.io-client';
 import useUserStore from '../../store/userStore';
-import { format } from 'date-fns'
+import { format } from 'date-fns';
 
-const urlSocket = import.meta.env.VITE_URL_SOCKET
+const urlSocket = import.meta.env.VITE_URL_SOCKET;
 
 const socket = io(urlSocket);
 
@@ -15,21 +15,25 @@ export type IMessagem = {
   userName: string;
   text: string;
   createdAt: string;
-}
+};
 
 const Chat: React.FC = () => {
-  const [message, setMessagem] = useState('')
-  const [messages, setMessages] = useState<IMessagem[]>([])
-  const { user } = useUserStore((store) => store)
+  const [message, setMessagem] = useState('');
+  const [messages, setMessages] = useState<IMessagem[]>([]);
+  const { user } = useUserStore((store) => store);
 
   const myMessageCSS = (userName: string) => {
-    if (user.userName.toLocaleLowerCase().trim() === userName.toLocaleLowerCase().trim()) return 'self-end bg-emerald-500 flex flex-col justify-start text-black p-2 text-end';
+    if (
+      user.userName.toLocaleLowerCase().trim() ===
+      userName.toLocaleLowerCase().trim()
+    )
+      return 'self-end bg-emerald-500 flex flex-col justify-start text-black p-2 text-end';
 
-    return 'self-start bg-blue-500 flex flex-col justify-start text-black p-2 text-start'
-  }
+    return 'self-start bg-blue-500 flex flex-col justify-start text-black p-2 text-start';
+  };
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (message.trim()) {
       const newMessage: IMessagem = {
         socketId: socket.id,
@@ -37,100 +41,79 @@ const Chat: React.FC = () => {
         userName: user.userName,
         text: message.trim(),
         createdAt: new Date().toISOString(),
-      }
-      setMessages(prev => [...prev, newMessage])
-      socket.emit('sendMessage', newMessage)
-      setMessagem('')
+      };
+      setMessages((prev) => [...prev, newMessage]);
+      socket.emit('sendMessage', newMessage);
+      setMessagem('');
     }
-  }
+  };
 
   const handleChangeInput = (e: FormEvent<HTMLInputElement>) => {
     const newValue = e.currentTarget.value;
 
-    setMessagem(newValue)
-  }
+    setMessagem(newValue);
+  };
 
   useEffect(() => {
     socket.on('connect', () => {
-      socket.emit('getMessage',{}, (response: IMessagem[]) => {
-        setMessages(response)
-      })
+      socket.emit('getMessage', {}, (response: IMessagem[]) => {
+        setMessages(response);
+      });
     });
 
     socket.on('reciveMessage', (io) => {
-      if (user.userName !== io.userName){
-        setMessages(prev => [...prev, io])
+      if (user.userName !== io.userName) {
+        setMessages((prev) => [...prev, io]);
       }
-    })
-
-    socket.on('disconnect', () => {
     });
 
-  return () => {
-    socket.off('connect');
-    socket.off('disconnect');
-    socket.off('reciveMessage');
-  };
-  }, [])
+    socket.on('disconnect', () => {});
 
-  if (!user.userName) return <Navigate to='/login'/>
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('reciveMessage');
+    };
+  }, []);
+
+  // if (!user.userName) return <Navigate to='/login'/>
 
   return (
-    <div
-      className='flex flex-col justify-between items-center w-full h-screen'
-    >
-      <header
-        className='flex flex-col items-center p-3 justify-center w-full bg-emerald-600 shadow-lg'
-      >
-        <h1
-          className='text-xl font-bold text-white shadow-inner capitalize '
-        >
+    <div className="flex flex-col justify-between items-center w-full h-screen">
+      <header className="flex flex-col items-center p-3 justify-center w-full bg-emerald-600 shadow-lg">
+        <h1 className="text-xl font-bold text-white shadow-inner capitalize ">
           Chat
         </h1>
 
-          <h2
-            className='self-end shadow-2xl font-bold text-white text-2xl capitalize '
-          >
-            {user.userName}
-          </h2>
+        <h2 className="self-end shadow-2xl font-bold text-white text-2xl capitalize ">
+          {user.userName}
+        </h2>
       </header>
-      <ul
-        className='flex flex-col justify-start h-full w-full p-3 px-5 gap-2 overflow-auto scrollbar-thumb-gray-900 scrollbar-track-gray-100 scrollbar-thin'
-      >
-        {messages.map(({id, text, userName, createdAt}) => (
+      <ul className="flex flex-col justify-start h-full w-full p-3 px-5 gap-2 overflow-auto scrollbar-thumb-gray-900 scrollbar-track-gray-100 scrollbar-thin">
+        {messages.map(({ id, text, userName, createdAt }) => (
           <li
             className={`${myMessageCSS(userName)} min-w-[200px] rounded`}
             key={id}
           >
-            <b
-              className='capitalize text-sm'
-            >
-              {userName}
-            </b>
-            <p
-              className='text-white font-medium text-xl'
-            >
-              {text}
-            </p>
-            <span>
-              {format(new Date(createdAt), 'HH:mm')}
-            </span>
+            <b className="capitalize text-sm">{userName}</b>
+            <p className="text-white font-medium text-xl">{text}</p>
+            <span>{format(new Date(createdAt), 'HH:mm')}</span>
           </li>
         ))}
       </ul>
       <form
-        className='w-full flex justify-around p-3 bg-emerald-600'
+        className="w-full flex justify-around p-3 bg-emerald-600"
         onSubmit={handleSubmit}
       >
         <input
-          className='bg-white rounded w-[80%] px-3'
+          className="bg-white rounded w-[80%] px-3"
           type="text"
           onChange={handleChangeInput}
           placeholder="Digite sua Mensagem..."
           value={message}
         />
         <button
-          className='bg-blue-600 p-3 text-white shadow-sm rounded hover:bg-blue-100 hover:text-black'
+          className="bg-blue-600 p-3 text-white shadow-sm rounded hover:bg-blue-100 hover:text-black"
           type="submit"
         >
           Enviar
@@ -138,6 +121,6 @@ const Chat: React.FC = () => {
       </form>
     </div>
   );
-}
+};
 
 export default Chat;

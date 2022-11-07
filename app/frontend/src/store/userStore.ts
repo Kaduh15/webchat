@@ -1,21 +1,21 @@
-import create from 'zustand'
+import create from 'zustand';
 
 export interface IUser {
-  userName: string
+  userName: string;
 }
 
 export interface IUserStore {
-  user: IUser
-  setUserName: (userName: string) => void
+  user: IUser;
+  setUserName: (userName: string) => void;
 }
 
 const useUserStore = create<IUserStore>((set) => ({
   user: {
-    userName: ''
+    userName: '',
   },
   setUserName: (userName: string) => {
-    set(() => ({ user: { userName }}))
-  }
-}))
+    set(() => ({ user: { userName } }));
+  },
+}));
 
 export default useUserStore;

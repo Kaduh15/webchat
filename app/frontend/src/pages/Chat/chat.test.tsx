@@ -1,19 +1,25 @@
 // testes
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import {afterEach ,beforeEach, describe, expect, test, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import * as userStore from '../../store/userStore';
 import '@testing-library/jest-dom';
 
 import App from '../../App';
 import renderWithRouter from '../../tests/renderWithRouter';
 
-describe.only('Pagina Chat', () => {
+describe('Pagina Chat', () => {
   beforeEach(async () => {
-    renderWithRouter(<App />);
+    renderWithRouter(<App />, '/');
+    vi.spyOn(userStore, 'default').mockImplementation(() => ({user: {userName: 'Fernando'}}))
   });
 
-  test('Espera ter o titulo do chat', async () => {
-    const heading = screen.getByRole('heading', { name: /chat/i });
+  test('test', () => {
+
+  })
+
+  test('Espera ter o titulo chat', async () => {
+    const heading = screen.getByRole('heading', {name: /chat/i});
 
     expect(heading).toBeInTheDocument();
   });

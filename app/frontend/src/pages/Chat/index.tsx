@@ -76,7 +76,7 @@ const Chat: React.FC = () => {
     };
   }, []);
 
-  // if (!user.userName) return <Navigate to='/login'/>
+  if (!user.userName) return <Navigate to='/login'/>
 
   return (
     <div className="flex flex-col justify-between items-center w-full h-screen">

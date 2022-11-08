@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 export interface IUser {
+  id?: string;
   userName: string;
 }
 

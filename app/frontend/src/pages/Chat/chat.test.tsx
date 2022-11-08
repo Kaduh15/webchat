@@ -10,8 +10,10 @@ import renderWithRouter from '../../tests/renderWithRouter';
 
 describe('Pagina Chat', () => {
   beforeEach(async () => {
-    renderWithRouter(<App />, '/');
-    vi.spyOn(userStore, 'default').mockImplementation(() => ({user: {userName: 'Fernando'}}))
+    renderWithRouter(<App />, '/chat');
+    vi
+      .spyOn(userStore, 'default')
+      .mockImplementation(() => ({user: {userName: 'Fernando'}}))
   });
 
   test('test', () => {

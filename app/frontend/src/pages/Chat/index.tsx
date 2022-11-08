@@ -1,18 +1,14 @@
 import { nanoid } from 'nanoid';
 import React, { FormEvent, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import useUserStore from '../../store/userStore';
 import { format } from 'date-fns';
-
-const urlSocket = import.meta.env.VITE_URL_SOCKET;
-
-const socket = io(urlSocket);
+import useSocketStore from '../../store/useSocketStore';
 
 export type IMessagem = {
   socketId?: string;
   id: string;
-  userName: string;
+  author: string;
   text: string;
   createdAt: string;
 };
@@ -20,7 +16,9 @@ export type IMessagem = {
 const Chat: React.FC = () => {
   const [message, setMessagem] = useState('');
   const [messages, setMessages] = useState<IMessagem[]>([]);
+  console.log("🚀 ~ file: index.tsx ~ line 19 ~ messages", messages)
   const { user } = useUserStore((store) => store);
+  const { socket } = useSocketStore((store) => store);
 
   const myMessageCSS = (userName: string) => {
     if (
@@ -38,7 +36,7 @@ const Chat: React.FC = () => {
       const newMessage: IMessagem = {
         socketId: socket.id,
         id: nanoid(20),
-        userName: user.userName,
+        author: user.userName,
         text: message.trim(),
         createdAt: new Date().toISOString(),
       };
@@ -55,24 +53,12 @@ const Chat: React.FC = () => {
   };
 
   useEffect(() => {
-    socket.on('connect', () => {
-      socket.emit('getMessage', {}, (response: IMessagem[]) => {
-        setMessages(response);
-      });
+    socket.on('reciveMessage', (data) => {
+      setMessages((prev) => [...prev, data]);
     });
-
-    socket.on('reciveMessage', (io) => {
-      if (user.userName !== io.userName) {
-        setMessages((prev) => [...prev, io]);
-      }
-    });
-
-    socket.on('disconnect', () => {});
 
     return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('reciveMessage');
+      socket.off('reciveMessage')
     };
   }, []);
 
@@ -90,12 +76,12 @@ const Chat: React.FC = () => {
         </h2>
       </header>
       <ul className="flex flex-col justify-start h-full w-full p-3 px-5 gap-2 overflow-auto scrollbar-thumb-gray-900 scrollbar-track-gray-100 scrollbar-thin">
-        {messages.map(({ id, text, userName, createdAt }) => (
+        {messages.map(({ id, text, author, createdAt }) => (
           <li
-            className={`${myMessageCSS(userName)} min-w-[200px] rounded`}
+            className={`${myMessageCSS(author)} min-w-[200px] rounded`}
             key={id}
           >
-            <b className="capitalize text-sm">{userName}</b>
+            <b className="capitalize text-sm">{author}</b>
             <p className="text-white font-medium text-xl">{text}</p>
             <span>{format(new Date(createdAt), 'HH:mm')}</span>
           </li>

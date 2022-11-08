@@ -20,7 +20,13 @@ const io = new Server(server, {
   },
 });
 
+type TUser = {
+  id: string;
+  userName: string;
+};
+
 const messagens: IMessagem[] = [];
+let usersOn: TUser[] = [];
 
 const PORT = process.env.PORT;
 
@@ -39,20 +45,15 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log(`a user connected: ${socket.id}`);
+  console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on("sendMessage", (message) => {
-    console.log(`send - ${message.userName} | ${message.text}`);
-    messagens.push(message);
-    socket.broadcast.emit("reciveMessage", message);
-  });
+  socket.on('sendMessage', (messagen) => {
+    console.log(`📩: ${messagen.author} - ${messagen.text}`)
+    socket.broadcast.emit('reciveMessage', messagen);
+  })
 
   socket.on("disconnect", () => {
-    console.log(`a user disconnet: ${socket.id}`);
-  });
-
-  socket.on("getMessage", (data, callback) => {
-    callback(messagens);
+    console.log(`🔥: ${socket.id} user disconnected`);
   });
 });
 

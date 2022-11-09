@@ -1,13 +1,11 @@
 import { nanoid } from 'nanoid';
 import React, { FormEvent, useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import useUserStore from '../../store/userStore';
 import { format } from 'date-fns';
 import useSocketStore from '../../store/useSocketStore';
-import { useParams } from 'react-router-dom';
 
 export type IMessagem = {
-  roomId: string;
   socketId?: string;
   id: string;
   author: string;
@@ -15,11 +13,9 @@ export type IMessagem = {
   createdAt: string;
 };
 
-const Chat: React.FC = () => {
+const ChatGlobal: React.FC = () => {
   const [message, setMessagem] = useState('');
   const [messages, setMessages] = useState<IMessagem[]>([]);
-  const [members, setMembers] = useState<string[]>([]);
-  const { roomId } = useParams();
   const { user } = useUserStore((store) => store);
   const { socket } = useSocketStore((store) => store);
 
@@ -35,9 +31,8 @@ const Chat: React.FC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (message.trim() && !!roomId) {
+    if (message.trim()) {
       const newMessage: IMessagem = {
-        roomId: roomId,
         socketId: socket.id,
         id: nanoid(20),
         author: user.userName,
@@ -45,7 +40,7 @@ const Chat: React.FC = () => {
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, newMessage]);
-      socket.emit('sendMessageRoom', newMessage);
+      socket.emit('sendMessage', newMessage);
       setMessagem('');
     }
   };
@@ -57,24 +52,16 @@ const Chat: React.FC = () => {
   };
 
   useEffect(() => {
-    socket.emit('joinRoom', roomId);
-
-    socket.on('reciveMessageRoom', (data) => {
+    socket.on('reciveMessage', (data) => {
       setMessages((prev) => [...prev, data]);
     });
 
-    socket.on('connectToRoom', (data) => {
-      setMessages(data.messagens);
-      setMembers(data.members);
-    });
-
     return () => {
-      socket.off('reciveMessageRoom');
-      socket.emit('leaveJoin', roomId);
+      socket.off('reciveMessage')
     };
   }, []);
 
-  if (!user.userName) return <Navigate to="/login" />;
+  if (!user.userName) return <Navigate to='/login'/>
 
   return (
     <div className="flex flex-col justify-between items-center w-full h-screen">
@@ -83,9 +70,8 @@ const Chat: React.FC = () => {
           Chat
         </h1>
 
-        <h2 className="flex justify-between w-full self-end shadow-2xl font-bold text-white text-2xl capitalize ">
-          <span>{members.find(member => member !== user.userName)}</span>
-          <span>{user.userName}</span>
+        <h2 className="self-end shadow-2xl font-bold text-white text-2xl capitalize ">
+          {user.userName}
         </h2>
       </header>
       <ul className="flex flex-col justify-start h-full w-full p-3 px-5 gap-2 overflow-auto scrollbar-thumb-gray-900 scrollbar-track-gray-100 scrollbar-thin">
@@ -122,4 +108,4 @@ const Chat: React.FC = () => {
   );
 };
 
-export default Chat;
+export default ChatGlobal;

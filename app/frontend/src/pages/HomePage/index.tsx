@@ -9,31 +9,55 @@ const HomePage: React.FC = () => {
   const { socket } = useSocketStore((store) => store);
 
   useEffect(() => {
-    socket.emit('onUser', { userName: user.userName });
+    if (!!user.userName.trim())
+      socket.emit('addUser', { userName: user.userName });
 
-    socket.on('usersOn', (data) => {
-      console.log('🚀 ~ file: home.tsx ~ line 12 ~ socket.on ~ data', data);
-      setUserOn(data);
+    socket.on('getUserOn', (data: IUser[]) => {
+      const userOnline =data.filter(({userName}) => userName !== user.userName)
+      console.log("🚀 ~ file: index.tsx ~ line 17 ~ socket.on ~ userOnline", userOnline)
+      setUserOn(userOnline);
     });
 
-    return () => {};
+    return () => {
+      socket.off('getUserOn');
+    };
   }, []);
 
   if (!user.userName) return <Navigate to="/login" />;
   return (
-    <>
-      <header>
-        <h1>Webchat</h1>
+    <main className="flex flex-col justify-between h-full w-full">
+      <header className="flex items-center justify-around h-10 bg-emerald-400">
+        <h1 className="font-bold text-white border-b-4 rounded border-t-4">
+          Webchat
+        </h1>
       </header>
-      <section id="users-on" className="bg-blue-200">
-        <ul>
-          {userOn.map(({ id }) => (
-            <li key={id}>{id}</li>
-          ))}
-        </ul>
-      </section>
-      <Link to="/chat">Chat</Link>
-    </>
+      <div className="h-full w-full flex flex-col justify-center items-center">
+        <h2>Usuarios Online</h2>
+        <section
+          id="users-on"
+          className="h-full w-full overflow-auto bg-blue-400"
+        >
+          <ul className="w-full">
+            {userOn.map(({ id, userName }, index) => (
+              <li
+                key={id}
+                className={`${
+                  index % 2 === 0 ? 'bg-blue-400' : 'bg-blue-600'
+                } text-center font-mono text-xl text-white`}
+              >
+                {userName}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+      <Link
+        className="bg-green-900 px-2 py-1 text-white font-mono shadow-lg text-center"
+        to="/chat"
+      >
+        ir para Chat
+      </Link>
+    </main>
   );
 };
 

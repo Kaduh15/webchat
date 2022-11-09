@@ -1,12 +1,12 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import useUserStore from '../../store/userStore';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [inputUserName, setinputUserName] = useState('');
-  const { setUserName } = useUserStore((store) => store);
+  const { user, setUserName } = useUserStore((store) => store);
 
   const borderInput = () => {
     if (!inputUserName.trim()) return 'border-gray-300';
@@ -31,6 +31,8 @@ const Login: React.FC = () => {
     setUserName(inputUserName);
     navigate('/');
   };
+
+  if (user.userName) return <Navigate to="/" />
 
   return (
     <main className="flex justify-center items-center h-full bg-gradient-to-br from-emerald-400 to-emerald-900">

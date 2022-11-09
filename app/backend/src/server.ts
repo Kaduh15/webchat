@@ -1,8 +1,9 @@
 import express from "express";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import cors from "cors";
 import http from "http";
 import "dotenv/config";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 export type IMessagem = {
   socketId?: string;
@@ -44,16 +45,42 @@ app.get("/", (req, res) => {
   });
 });
 
+const addUserOn = (socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, { userName }: TUser) => {
+  const hasUserOn = usersOn.some(({ id }) => id === socket.id);
+
+    if (!hasUserOn && !! userName.trim())
+      usersOn.push({ id: socket.id, userName: userName });
+}
+
+const removeUserOn = (id: string) => {
+  usersOn = usersOn.filter((user) => {
+    console.log(
+      "🚀 ~ file: server.ts ~ line 49 ~ removeUserOn ~ usersOn",
+      usersOn
+    );
+    return user.id !== id;
+  });
+};
+
 io.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on('sendMessage', (messagen) => {
-    console.log(`📩: ${messagen.author} - ${messagen.text}`)
-    socket.broadcast.emit('reciveMessage', messagen);
-  })
+  socket.on("addUser", ({ userName }) => {
+    addUserOn(socket, { userName })
+    io.emit("getUserOn", usersOn);
+  });
+
+  socket.emit("getUserOn", usersOn);
+
+  socket.on("sendMessage", (messagen) => {
+    console.log(`📩: ${messagen.author} - ${messagen.text}`);
+    socket.broadcast.emit("reciveMessage", messagen);
+  });
 
   socket.on("disconnect", () => {
     console.log(`🔥: ${socket.id} user disconnected`);
+    removeUserOn(socket.id);
+    io.emit("getUserOn", usersOn);
   });
 });
 

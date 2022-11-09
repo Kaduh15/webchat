@@ -16,7 +16,6 @@ export type IMessagem = {
 const Chat: React.FC = () => {
   const [message, setMessagem] = useState('');
   const [messages, setMessages] = useState<IMessagem[]>([]);
-  console.log("🚀 ~ file: index.tsx ~ line 19 ~ messages", messages)
   const { user } = useUserStore((store) => store);
   const { socket } = useSocketStore((store) => store);
 

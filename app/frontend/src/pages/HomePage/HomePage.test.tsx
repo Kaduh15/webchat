@@ -22,6 +22,7 @@ describe.concurrent('Pagina Principal', () => {
       const { history } = renderWithRouter(<App />);
       expect(history.location.pathname).toBe('/login');
     });
+    
     test('Verifica se permanece na pagina caso tenha um UserName', () => {
       mockUserName('Thiago');
       const { history } = renderWithRouter(<App />);
@@ -37,5 +38,5 @@ describe.concurrent('Pagina Principal', () => {
     expect(headingWebchat).toBeInTheDocument();
   });
 
-  
+
 });

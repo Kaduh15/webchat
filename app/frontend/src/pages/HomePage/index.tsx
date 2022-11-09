@@ -7,6 +7,7 @@ import { TIds } from '../../types';
 
 const HomePage: React.FC = () => {
   const [userOn, setUserOn] = useState<IUser[]>([]);
+  console.log("🚀 ~ file: index.tsx ~ line 10 ~ userOn", userOn)
   const { user } = useUserStore((store) => store);
   const { socket } = useSocketStore((store) => store);
 
@@ -46,7 +47,7 @@ const HomePage: React.FC = () => {
           className="h-full w-full overflow-auto bg-blue-400"
         >
           <ul className="w-full">
-            {userOn.map(({ id, userName }, index) => (
+            {!!userOn.length ? userOn.map(({ id, userName }, index) => (
               <li
                 key={id}
                 className={`${
@@ -64,7 +65,9 @@ const HomePage: React.FC = () => {
                   {userName}
                 </Link>
               </li>
-            ))}
+            )) : <li
+            className='text-center p-5'
+            >Não tem mais niguem Online 🙁</li>}
           </ul>
         </section>
       </div>

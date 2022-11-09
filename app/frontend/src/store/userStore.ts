@@ -1,12 +1,17 @@
 import create from 'zustand';
 
-export interface IUser {
-  id?: string;
+export interface IUserName {
   userName: string;
 }
+export interface IUserId {
+  id: string;
+}
+
+export interface IUser extends IUserId, IUserName{}
+
 
 export interface IUserStore {
-  user: IUser;
+  user: IUserName;
   setUserName: (userName: string) => void;
 }
 

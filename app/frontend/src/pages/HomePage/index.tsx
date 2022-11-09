@@ -1,20 +1,28 @@
+import { nanoid } from 'nanoid';
 import React, { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import useUserStore, { IUser } from '../../store/userStore';
 import useSocketStore from '../../store/useSocketStore';
+import { TIds } from '../../types';
 
 const HomePage: React.FC = () => {
   const [userOn, setUserOn] = useState<IUser[]>([]);
   const { user } = useUserStore((store) => store);
   const { socket } = useSocketStore((store) => store);
 
+  const createUrlId = (ids: TIds) => {
+    ids.sort();
+    return ids.join('+');
+  };
+
   useEffect(() => {
     if (!!user.userName.trim())
       socket.emit('addUser', { userName: user.userName });
 
     socket.on('getUserOn', (data: IUser[]) => {
-      const userOnline =data.filter(({userName}) => userName !== user.userName)
-      console.log("🚀 ~ file: index.tsx ~ line 17 ~ socket.on ~ userOnline", userOnline)
+      const userOnline = data.filter(
+        ({ userName }) => userName !== user.userName,
+      );
       setUserOn(userOnline);
     });
 
@@ -42,10 +50,19 @@ const HomePage: React.FC = () => {
               <li
                 key={id}
                 className={`${
-                  index % 2 === 0 ? 'bg-blue-400' : 'bg-blue-600'
-                } text-center font-mono text-xl text-white`}
+                  index % 2 === 1 ? 'bg-blue-400' : 'bg-blue-600'
+                } text-center font-mono text-xl text-white py-2`}
               >
-                {userName}
+                <Link
+                  className="flex justify-center items-center gap-5"
+                  to={`chat/${createUrlId([id, socket.id])}`}
+                >
+                  <img
+                    className="h-24 w-24 rounded-full border-2 "
+                    src={`https://avatars.dicebear.com/api/bottts/${userName}.svg`}
+                  />
+                  {userName}
+                </Link>
               </li>
             ))}
           </ul>
@@ -55,7 +72,7 @@ const HomePage: React.FC = () => {
         className="bg-green-900 px-2 py-1 text-white font-mono shadow-lg text-center"
         to="/chat"
       >
-        ir para Chat
+        ir para Chat Global
       </Link>
     </main>
   );

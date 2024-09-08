@@ -83,10 +83,10 @@ $ cd webchat
 $ npm run prestart
 
 # Run the project
-$ npm run compore:up
+$ npm run compose:up
 
 # Stop the project
-$ npm run compore:down
+$ npm run compose:down
 
 # The frontend will initialize in the <http://localhost:8080>
 # The backend will initialize in the <http://localhost:3001>
